@@ -1,20 +1,26 @@
 javascript: (function () {
-    var url = document.location;
-    var links = document.getElementsByTagName('link');
-    var str = '';
-    var found = '';
+    var currentUrl = document.location;
+    var headLinks = document.getElementsByTagName('link');
 
-    for (var i = 0; i < links.length; i++) {
-        if (links[i].getAttribute('rel') == 'canonical') {
-            found = links[i].getAttribute('href');
+    var compareStatusText = {
+        'equal': '\r\nCanonical НЕ совпадает с текущей страницей:\r\n',
+        'notEqual': '\r\nCanonical совпадает с текущей страницей:\r\n'
+    };
+    var message = '';
 
-            if (found != url) {
-                str = str + '\r\n' + found + '\r\nCanonical не совпадает с текущей страницей\r\n--------------------------------------------------\r\n';
-            } else  {
-                str = str + '\r\n' + found + '\r\nCanonical совпадает с текущей страницей\r\n--------------------------------------------------\r\n';
+    for (var i = 0; i < headLinks.length; i++) {
+        if (headLinks[i].getAttribute('rel') == 'canonical') {
+            var resultUrl = headLinks[i].getAttribute('href');
+            var message = '';
+            if (resultUrl != currentUrl) {
+                message += compareStatusText.equal + resultUrl;
+                break;
+            } else {
+                message += compareStatusText.notEqual + resultUrl;
+                break;
             }
         }
     }
-        if (str == '') str = 'Нет каноникала';
-        alert(str);
+    if (message == '') message = 'Нет каноникала';
+    alert(message);
 })();
