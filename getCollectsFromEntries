@@ -1,0 +1,26 @@
+javascript: (function() {
+var entries = window.performance.getEntries();
+	if (entries.length > 0) {
+		for (let item of entries) {
+			if (item.name.includes('collect')) {
+				a = document.createElement('a');
+				a.href = item.name;
+				let obj = {};
+				console.groupCollapsed(item.name);
+				for (let str of a.search.slice(1).split('&')) {
+					let [k, v] = str.split('=');
+					if (k === 't' || k === 'cd2' || k === 'tid') {
+						obj[k] = v;
+					}
+					console.info(k + ':', v);
+				}
+				console.groupEnd();
+				if(Object.keys(obj).length == 3) console.table(obj);
+			}
+		}
+	} 
+	else {
+			message = "collect'ы отсутствует на странице!";
+			console.warn(message);
+	}
+})();
