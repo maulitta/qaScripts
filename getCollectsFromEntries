@@ -1,26 +1,28 @@
 javascript: (function() {
 var entries = window.performance.getEntries();
+var message = "";
 	if (entries.length > 0) {
 		for (let item of entries) {
 			if (item.name.includes('collect')) {
 				a = document.createElement('a');
 				a.href = item.name;
-				let obj = {};
-				console.groupCollapsed(item.name);
-				for (let str of a.search.slice(1).split('&')) {
-					let [k, v] = str.split('=');
-					if (k === 't' || k === 'cd2' || k === 'tid') {
-						obj[k] = v;
+				if(a.search) {
+					let obj = {};
+					console.groupCollapsed(item.name);
+					for (let str of a.search.slice(1).split('&')) {
+						let [k, v] = str.split('=');
+						if (k === 't' && v === 'pageview' || k === 'cd2' || k === 'tid') {
+							obj[decodeURIComponent(k)] = decodeURIComponent(v);
+						}
+						console.info(decodeURIComponent(k) + ':', decodeURIComponent(v));
 					}
-					console.info(k + ':', v);
+					console.groupEnd();
+					if(obj.t === 'pageview') console.table(obj);
 				}
-				console.groupEnd();
-				if(Object.keys(obj).length == 3) console.table(obj);
+				else message = "Один из collect'ов отправлен POST-запросом (см. параметры в payloads)";
 			}
 		}
 	} 
-	else {
-			message = "collect'ы отсутствует на странице!";
-			console.warn(message);
-	}
+	else message = "collect'ы отсутствует на странице!";
+	if (message) console.warn(message);
 })();
