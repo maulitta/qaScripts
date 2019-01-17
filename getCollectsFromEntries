@@ -23,6 +23,5 @@ var message = "";
 			}
 		}
 	} 
-	else message = "collect'ы отсутствует на странице!";
-	if (message) console.warn(message);
+if (message) console.warn(message);
 })();
